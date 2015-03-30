@@ -1,10 +1,10 @@
 {
   "name": "bunyan-logstash-tcp-consolelog",
   "description": "Logstash TCP console log plugin for Bunyan",
-  "version": "0.1.0",
+  "version": "0.1.1 ",
   "repository": "https://github.com/DexterYan/bunyan-logstash-tcp-consolelog.git",
   "homepage": "https://github.com/DexterYan/bunyan-logstash-tcp-consolelog",
-  "main": "lib/consoleLog.js",
+  "main": "lib/consoleLogStash.js",
   "author": "Dexter Yan",
   "license": "MIT",
   "keywords": [
