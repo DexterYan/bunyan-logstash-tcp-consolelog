@@ -1,36 +1,89 @@
 # A TCP console log for Bunyan
 
 [![build status](https://travis-ci.org/DexterYan/bunyan-logstash-tcp-consolelog.png)](http://travis-ci.org/DexterYan/bunyan-logstash-tcp-consolelog)
+A replacement of console.log with logstash tcp, and auto reconnect when error or disconnec appears. It also exports the bunyanlog for modifing.
 
-A replacement of console.log with logstash tcp, and auto reconnect when error or disconnec appears. 
+## Credits
+
+This module is heavily based on [bunyan-logstash-tcp](https://github.com/chris-rock/bunyan-logstash-tcp.git).
+
+## Usage
+```
+    var bunyan = require('bunyan-logstash-tcp-consolelog');
+    var options = {};
+    var streamsOptions = {};
+    var bunyanLog;
+
+    options.project_name = 'test bunyan console log';
+    options.name = 'test';
+    
+    options.level = 'debug';
+
+    streamsOptions.host = '127.0.0.1';
+    streamsOptions.port = '9998';
+
+    bunyanLog = bunyan.createLogger(options, streamsOptions);
+
+    console.log('log test');
+    console.warn('warn test');
+    console.error('error test');
+
+    bunyanLog.error('bunyan error test');
+```
+
+# Configuration
+
+You can use default setting without passing, or passing options and streamsOptions
+
+Options is to configure the bunyan module, the name is required. You can add other parameters
 <table>
   <tr>
     <th>Parameter</th><th>Type</th><th>Default</th>
   </tr>
   <tr>
-    <th>NODE_ENV</th>
+    <th>name</th>
     <td>string</td>
-    <td><code>unspecified-env</code></td>
+    <td><code>undefined</code></td>
+  </tr>
+</table>
+
+streamOption is to configure the TCP stream.
+
+<table>
+  <tr>
+    <th>level</th>
+    <td>string</td>
+    <td><code>info</code></td>
   </tr>
   <tr>
-    <th>PROJECT_NAME</th>
+    <th>server</th>
     <td>string</td>
-    <td><code>unspecified-project-name</code></td>
+    <td><code>os.hostname()</code></td>
   </tr>
   <tr>
-    <th>PROJECT_ROLE</th>
+    <th>host</th>
     <td>string</td>
-    <td><code>unspecified-project-role</code></td>
+    <td><code>"127.0.0.1"</code></td>
   </tr>
   <tr>
-    <th>npm_package_name</th>
-    <td>string</td>
-    <td><code>unspecified-app-name</code></td>
+    <th>port</th>
+    <td>number</td>
+    <td><code>9999</code></td>
   </tr>
   <tr>
-    <th>npm_package_version</th>
+    <th>application</th>
     <td>string</td>
-    <td><code>unspecified-app-version</code></td>
+    <td><code>process.title</code></td>
+  </tr>
+  <tr>
+    <th>pid</th>
+    <td>string</td>
+    <td><code>process.pid</code></td>
+  </tr>
+  <tr>
+    <th>tags</th>
+    <td>array|string[]</td>
+    <td><code>["bunyan"]</code></td>
   </tr>
 </table>
 
@@ -38,21 +91,56 @@ A replacement of console.log with logstash tcp, and auto reconnect when error or
 
     $ npm install bunyan-logstash-tcp-consolelog
 
-## Usage
-```
-   var CreateBunyanConsoleLog = require('bunyan-logstash-tcp-consolelog');
-   new CreateBunyanConsoleLog();
-   console.log('test');
-```
 
 ## Events
 
 Inside the console.log stream will emit ``open``, ``close`` and ``error``. Once it emit ``error`` or ``close``, it will start auto reconnect based on [Retry Algorithm](https://technet.microsoft.com/en-us/library/ms365783%28v=sql.105%29.aspx);
 
-## Credits
+## Logstash Configuration
 
-This module is heavily based on [bunyan-logstash-tcp](https://github.com/chris-rock/bunyan-logstash-tcp.git).
+Configuration for [Logstash 1.3.3+](http://logstash.net/docs/1.4.2/inputs/tcp):
 
+```javascript
+input {
+  // config for bunyan udp
+  udp {
+      'port' => "9999"
+  }
+  // config for bunyan tcp
+  tcp {
+      'port' => "9998"
+  }
+}
+```
+
+## Try with logstash locally
+
+ - Download logstash from http://logstash.net/
+ - Unpack it (tar -zxf logstash-1.4.2.tar.gz)
+ - Create a test logstash configuration `logstash.conf`
+
+```code
+input {
+  stdin { 
+    type => "stdin-type"
+  }
+  udp {
+    port => "9999"
+  }
+  tcp {
+    port => "9998"
+  }
+}
+output { 
+  stdout {}
+}
+```
+
+ - Run `bin/logstash agent -f logstash.conf
+ - Run `node example/log.js`
+
+
+# License
 The MIT License (MIT)
 Copyright © 2015 Dexter Yan
 
