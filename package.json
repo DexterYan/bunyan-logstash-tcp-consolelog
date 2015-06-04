@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "CBuffer": "^0.1.5",
-    "lodash": "2.4.1"
+    "lodash": "^2.4.1"
   },
   "peerDependencies": {
     "bunyan": "1.x"

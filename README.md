@@ -116,7 +116,7 @@ input {
 ## Try with logstash locally
 
  - Download logstash from http://logstash.net/
- - Unpack it (tar -zxf logstash-1.4.2.tar.gz)
+ - Unpack it (tar -zxf logstash-1.5.0.tar.gz)
  - Create a test logstash configuration `logstash.conf`
 
 ```code
@@ -139,6 +139,8 @@ output {
  - Run `bin/logstash agent -f logstash.conf
  - Run `node example/log.js`
 
+# Example Website
+[www.safetyflights.com](http://www.safetyflights.com/#!/) is a flight Safety search engine that organizes Flight Information, Aviation Accidents Records and Airline Information to help you to choose suitable flight.
 
 # License
 The MIT License (MIT)
